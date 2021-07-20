@@ -1,0 +1,152 @@
+---
+layout: post
+title:  "Day 1: Rebooting the competitive programming drive"
+date:   2021-07-13 +0530
+categories: competitive-programming
+---
+### Disclaimer:
+> I am a beginner in competitive programming, and this is me documenting my learnings. So, anything I say is just what I think at the moment and should not be taken as hard truths.
+
+It has been a long time now that I practiced my competitive programming skills. Not super good at it. Last I practiced thoroughly was during interview preparation in July 2020.
+
+## Phase 1: Base Building
+I have planned to solve at least two `implementation` based problems everyday for a month starting today and additionally learning one new algorithm daily. I personally like string algorithms so I will start from there.
+
+#### Problem 1: [Do Not Be Distracted!](https://codeforces.com/problemset/problem/1520/A)
+
+```cpp
+main() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+  s.erase(unique(begin(s), end(s)), end(s));
+  sort(begin(s), end(s));
+  auto it = unique(begin(s), end(s));
+  if(it != end(s)) cout << "NO";
+  else cout << "YES";
+}
+```
+Time Complexity: O(nlog(n))
+Space Complexity: O(1) # not considering the space to hold the data
+
+Another solution:
+```cpp
+main() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+  unordered_set<char> se;
+  bool yes = true;
+  for(int i = 0; i < n; i++) {
+    if(i && s[i] == s[i-1]) continue;
+    if(se.count(s[i])) {
+      yes = false;
+      break;
+    }
+    se.insert(s[i]);
+  }
+  if(yes) cout << "YES";
+  else cout << "NO";
+}
+```
+Time Complexity: O(n)
+Space Complexity: O(n)  # the `unordered set` used to contain 
+elements for checking.
+
+#### Problem 2: [Black Square](https://codeforces.com/problemset/problem/431/A)
+
+```cpp
+main() {
+  vector<int> v(4);
+  for(auto& e: v) cin >> e;
+  string s;
+  cin >> s;
+  long long total = 0;
+  for(auto& c: s) {
+    int p = c - '0' - 1;  // additional -1 for zero based indexing
+    total += v[p];
+  }
+  cout << total;
+}
+```
+
+This would be more fun to write in Python.
+
+```py
+v = list(map(int, input().split()))
+s = input()
+s = [int(c)-1 for c in s]  #  -1 for zero based indexing
+total = sum(v[i] for i in s)
+print(total)
+```
+
+I am sure we could use find STL algorithm for the C++ code.
+That is all for today 2 implementation problem solving.
+
+Let us hop on to learning one new/old string algorithm.
+
+### String Algorithm
+
+The basic question when it comes to string is about, whether a given `pattern` of length `m` occurs in a `text` of length `n`.
+The problem can be solved using naive method in O(n*m) time.
+
+```cpp
+main() {
+  string text = "abcabc";
+  string pattern = "abc";
+  int n = text.length(), m = pattern.length();
+  bool found = false;
+  // looping through all starting position of the pattern
+  for(int i = 0; i < n-m+1; i++) {
+    // checking if the substring matches
+    if(text.substr(i, m) == pattern) {
+      found = true;
+      break;
+    }
+  }
+  if(found) cout << "YES";
+  else cout << "NO";
+}
+```
+
+Now there are algorithms that can solve the above pattern matching in O(n+m) time. The first one that comes in mind is the famous 
+`Knuth Morris Pratt` or better known as KMP algorithm.
+
+>[Here](https://www.youtube.com/watch?v=jAoTQRlhzQ8) is a video of Donald Knuth talking about KMP algorithm.
+
+
+```cpp
+
+vector<int> prefix_func(string s) {
+  int n = s.length();
+  vector<int> pi(n, 0);
+  for(int i = 1; i < n; i++) {
+    int j = pi[i-1];
+    while(j > 0 && s[i] != s[j])
+        j = pi[j-1];
+    if(s[i] == s[j])
+        j++;
+    pi[i] = j;
+  }
+  return pi;
+}
+```
+To use KMP algorithm, pre-compute the table using above `prefix_func`.
+So for given `pattern` and `text`, the string that should be passed to `prefix_func` is `pattern + x + text`, where 'x' is some character which doesn't belong to neither pattern nor text.
+
+The different questions that can be answered are:
+- Does the pattern occur in the text?
+- How many times does the pattern occur in the text?
+- If pattern occurs, find the starting position in text.
+- Find maximum non-overlapping occurrence of the pattern in the text.
+And many more.
+
+Most of the time, pattern matching is used as a part for solving a problem, and not a whole problem.
+
+### Sources:
+- `prefix_function` :- [cp-algorithms](https://cp-algorithms.com/string/prefix-function.html)
+
+### Resources for additonal learning and practicing:
+- [usaco.guide](https://usaco.guide/)

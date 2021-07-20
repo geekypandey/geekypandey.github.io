@@ -1,0 +1,100 @@
+---
+layout: post
+title:  "Day 5: Inconsistent days"
+date:   2021-07-18 +0530
+categories: competitive-programming
+---
+### Disclaimer:
+> I am a beginner in competitive programming, and this is me documenting my learnings. So, anything I say is just what I think at the moment and should not be taken as hard truths.
+
+## Two problems a day, keeps doctor away!
+
+### Problem 1: [Brain's Photos](https://codeforces.com/problemset/problem/707/A)
+
+Simple problem of taking input and comparing it with different values.
+
+```cpp
+main() {
+  int n, m; cin >> n >> m;
+  bool bw = true;
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j < m; j++) {
+      char c;
+      cin >> c;
+      if(c == 'C' || c == 'M' || c == 'Y') bw = false;
+    }
+  }
+  if(bw) cout << "#Black&White";
+  else cout << "#Color";
+}
+```
+
+This is better style of writing for the given problem. No need to write two for loops. Cleaner code.
+```cpp
+main() {
+  int n, m; cin >> n >> m;
+  bool bw = true;
+  char c;
+  while(cin >> c) {
+    if(c == 'C' || c == 'M' || c == 'Y') bw = false;
+  }
+  if(bw) cout << "#Black&White";
+  else cout << "#Color";
+}
+```
+
+
+### Problem 2: [Sereja and Dima](https://codeforces.com/problemset/problem/381/A)
+
+Implementing the greedy take and find score of each player.
+
+```cpp
+main() {
+  int n;
+  cin >> n;
+  vector<int> v(n);
+  for(auto& e: v) cin >> e;
+  int i = 0, j = n-1;
+  int s = 0, d = 0;
+  bool ser = true;
+  while(i <= j) {
+    if(v[i] > v[j]) {
+      if(ser) s += v[i];
+      else d += v[i];
+      i++;
+    } else {
+      if(ser) s += v[j];
+      else d += v[j];
+      j--;
+    }
+    ser = !ser;
+  }
+  cout << s << ' ' << d;
+}
+```
+
+More cleaner code and easy to understand.
+```cpp
+main() {
+  int n;
+  cin >> n;
+  vector<int> v(n);
+  for(auto& e: v) cin >> e;
+  int i = 0, j = n-1;
+  int s = 0, d = 0;
+  bool ser = true;
+  while(i <= j) {
+    int val = max(v[i], v[j]);
+    if(ser) s += val;
+    else d += val;
+    ser = !ser;
+    if(val == v[i]) i++;
+    else j--;
+  }
+  cout << s << ' ' << d;
+}
+``` 
+
+## Algorithm
+
+We didn't learn any new algorithm today :-(
