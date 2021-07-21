@@ -11,9 +11,13 @@ import requests
 
 def get_articles_names():
     username = 'geekypandey'
-    url = f'https://dev.to/api/articles?username={username}'
-    res = requests.get(url)
+    url = 'https://dev.to/api/articles/me/all'
+    headers = {
+        'api-key': os.environ.get('API_KEY')
+    }
+    res = requests.get(url, headers=headers)
     if res.status_code != 200:
+        print(f'Could not fetch users articles Error code: {res.status_code}')
         exit(1)
     articles = res.json()
     articles = [article.get('title') for article in articles]
@@ -32,6 +36,7 @@ if __name__ == '__main__':
         'api-key': api_key
     }
 
+    all_done = True
     for post in posts.iterdir():
         if not post.is_file():
             continue
@@ -54,4 +59,7 @@ if __name__ == '__main__':
             if res.status_code == 201:
                 print(f'{title} published successfully!')
             else:
+                all_done = False
                 print(f'{title} not published! Error: {res.status_code}')
+    if not all_done:
+        exit(1)
