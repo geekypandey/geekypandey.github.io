@@ -1,0 +1,108 @@
+---
+layout: post
+title:  "Day 9: Uping the problem rating"
+date:   2021-07-22 +0530
+categories: competitive-programming
+---
+### Disclaimer:
+> I am a beginner in competitive programming, and this is me documenting my learnings. So, anything I say is just what I think at the moment and should not be taken as hard truths.
+
+### Problem 1: [Taxi](https://codeforces.com/problemset/problem/158/B)
+
+
+```cpp
+using vi = vector<int>;
+
+#define all(x) begin(x), end(x)
+#define forn(i, n) for(int i = 0; i < n; i++)
+
+main() {
+  int n;
+  cin >> n;
+  vi v(5, 0);
+  forn(_, n) {
+	int g;
+	cin >> g;
+	v[g]++;
+  }
+  // every four will require one car
+  int four = v[4]; 
+  // every three will require one car
+  int three = v[3];
+  // it can take groups of one too
+  v[1] -= min(v[1], v[3]);
+  // a car can take two groups of two and change
+  int two = v[2]/2 + v[2]%2;
+  int rem = v[2]%2;
+  v[1] -= min(v[1], rem*2);
+  int one = v[1]/4 + (v[1]%4 != 0);
+
+  int ans = one + two + three + four;
+  cout << ans;
+}
+```
+The above solution was the first accepted solution I could come up with.
+
+This one is more cleaner [Greedy Approach]
+```cpp
+using vi = vector<int>;
+
+#define forn(i, n) for(int i = 0; i < n; i++)
+#define all(v) begin(v), end(v)
+#define endl '\n'
+
+main() {
+  int n;
+  cin >> n;
+  vi v(n);
+  for(auto& e: v) cin >> e;
+  sort(all(v));
+  int i = 0, j = n-1;
+  int ans = 0;
+  while(i <= j) {
+	int curr = v[j];
+	while(i < j && curr+v[i] <= 4) {
+	  curr += v[i++];
+	}
+	j--;
+	ans++;
+  }
+  cout << ans;
+}
+```
+
+### Problem 2: [Interesting Drink](https://codeforces.com/problemset/problem/706/B)
+
+I was initially afraid to solve the problem seeing `dp` in the tags. But then I hid the tags, and went for the 
+problem. lol.
+
+Just check the number of places whose booze price is less than or equal to the price the man can pay.
+Binary Search.
+
+```cpp
+using vi = vector<int>;
+
+#define forn(i, n) for(int i = 0; i < n; i++)
+#define all(v) begin(v), end(v)
+#define endl '\n'
+
+main() {
+  int n;
+  cin >> n;
+  vi v(n);
+  for(auto& e: v) cin >> e;
+  sort(all(v));
+  int q;
+  cin >> q;
+  forn(_, q) {
+	int p;
+	cin >> p;
+	auto it = upper_bound(all(v), p);
+	cout << distance(begin(v), it) << endl;
+  }
+}
+```
+
+## Algorithm
+
+We didn't learn any new algorithm today.
