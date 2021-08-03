@@ -11,6 +11,9 @@ from datetime import datetime
 import frontmatter
 
 
+START_DATE = datetime(year=2021, month=7, day=13)
+
+
 def format_title(title: str) -> str:
     title = '"' + title + '"'
     return title
@@ -21,23 +24,29 @@ if __name__ == '__main__':
     parser.add_argument('--title', dest='title', type=str, required=True, help='title of the file')
     parser.add_argument('--ext', dest='ext', default='markdown', type=str, help='extension of the file')
     parser.add_argument('--cat', dest='category', type=str, default='competitive-programming', help='category of the post')
+    parser.add_argument('--day', dest='day', action='store_true')
     args = parser.parse_args()
 
     # today's date in YYYY-MM-DD format
-    today_date = datetime.now().strftime('%Y-%m-%d')
+    now = datetime.now()
+    today_date = now.strftime('%Y-%m-%d')
 
     # title
     title = args.title
     title = '-'.join(title.lower().split())
 
-    # category
-    category = args.category
+    day_num = (now - START_DATE).days
 
-    # extension
-    ext = args.ext
+    if args.day:
+        filename = '-'.join((today_date, f'day-{day_num}', title))
+    else:
+        filename = '-'.join((today_date, title))
+    filename = filename + '.' + args.ext
 
-    filename = '-'.join((today_date, title))
-    filename = filename + '.' + ext
+    title = args.title.title()
+
+    if args.day:
+        title = f'Day {day_num}: {title}'
 
     if os.path.exists(filename):
         raise FileExistsError(f'{filename} already exists. Please choose different title.')
@@ -47,9 +56,9 @@ if __name__ == '__main__':
         f.write('---\n')
         metadata = {
             'layout': 'post',
-            'title': format_title(args.title),
+            'title': format_title(title),
             'date': f'{today_date} +0530',
-            'categories': category,
+            'categories': args.category,
         }
         for k, v in metadata.items():
             f.write(f'{k}: {v}\n')
